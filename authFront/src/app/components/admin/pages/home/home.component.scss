@@ -1,0 +1,10 @@
+// @import "~/src/scss/base/variables.scss";
+@import "../../../../../scss/base/variables";
+
+:host {
+  strong {
+    font-size: 25px;
+    font-weight: 700;
+    color: $vermelho;
+  }
+}
