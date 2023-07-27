@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, catchError, map, throwError } from 'rxjs';
 
 @Injectable({
@@ -14,9 +15,9 @@ export class AuthService {
   public sign(payLoad: { email: string; password: string }): Observable<any> {
     return this.http.post<{ token: string }>(`${this.url}/sign`, payLoad).pipe(
       map((res) => {
-        localStorage.removeItem('accsses_token')
-        localStorage.setItem('accsses_token', res.token)
-        return this.router.navigate(['admin'])
+        localStorage.removeItem('accsses_token');
+        localStorage.setItem('accsses_token', res.token);
+        return this.router.navigate(['admin']);
       }),
       catchError((e) => {
         if (e.error.message) return throwError(() => e.error.message);
@@ -29,8 +30,17 @@ export class AuthService {
     );
   }
 
-  public logout(){
-    localStorage.removeItem('accsses_token')
-    return this.router.navigate([''])
+  public logout() {
+    localStorage.removeItem('accsses_token');
+    return this.router.navigate(['']);
+  }
+
+  public isAuthenticated(): boolean {
+    const token = localStorage.getItem('accsses_token');
+
+    if (!token) return false;
+
+    const jwtHelper = new JwtHelperService();
+    return !jwtHelper.isTokenExpired(token);
   }
 }
